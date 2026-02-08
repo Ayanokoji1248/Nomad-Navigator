@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model City {
+  id                 String   @id @default(uuid())
+  name               String
+  country            String
+  description        String
+  avg_daily_cost     Int
+  best_time_to_visit String
+  rating             Float
+  slug               String   @unique
+  images             String[]
+
+  attractions Attraction[]
+  activities  Activity[]
+  stays       Stay[]
+  foods       Food[]
+}
+
+model Attraction {
+  id        String   @id @default(uuid())
+  name      String
+  rating    Float
+  entry_fee Float
+  images    String[]
+
+  city_id String
+  city    City   @relation(fields: [city_id], references: [id], onDelete: Cascade)
+}
+
+model Activity {
+  id        String   @id @default(uuid())
+  name      String
+  category  String
+  rating    Float
+  price_min Float
+  price_max Float
+  images    String[]
+
+  city_id String
+  city    City   @relation(fields: [city_id], references: [id], onDelete: Cascade)
+}
+
+model Stay {
+  id        String   @id @default(uuid())
+  name      String
+  type      String
+  price_min Float
+  price_max Float
+  rating    Float
+  images    String[]
+
+  city_id String
+  city    City   @relation(fields: [city_id], references: [id], onDelete: Cascade)
+}
+
+model Food {
+  id        String   @id @default(uuid())
+  name      String
+  rating    Float
+  avg_price Float
+  type      String
+  images    String[]
+
+  city_id String
+  city    City   @relation(fields: [city_id], references: [id], onDelete: Cascade)
+}
